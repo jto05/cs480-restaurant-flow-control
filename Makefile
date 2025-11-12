@@ -12,7 +12,7 @@ OBJS = consumer.o log.o producer.o dineseating.o
 PROGRAM=dineseating
 
 $(PROGRAM) : $(OBJS) 
-	$(CXX) -o $(PROGRAM) $^
+	$(CXX) -pthread -o $(PROGRAM) $^
 
 log.o: log.h
 	$(CXX) $(CXXFLAGS) log.cpp
