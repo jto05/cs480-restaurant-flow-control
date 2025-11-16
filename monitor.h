@@ -7,12 +7,12 @@
 
 class Monitor { 
 private:
-  queue<bool> queue;
+  std::queue<bool> queue;
   pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
   pthread_cond_t unconsumed;
   pthread_cond_t availableSlots;
   int requestsInQueue;
-  int maxQueueSize;
+  int capacity;
 
 public:
   Monitor(int queueSize);
