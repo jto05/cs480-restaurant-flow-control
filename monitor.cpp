@@ -13,7 +13,7 @@ void Monitor::insert( RequestType request ) {
   pthread_mutex_lock( &lock );
 
   //while queue is full
-  while (requestsInQueue >= maxQueueSize) {
+  while (requestsInQueue >= capacity) {
     pthread_cond_wait( &unconsumed, &lock );
   }
 
