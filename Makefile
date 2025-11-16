@@ -5,9 +5,9 @@
 # Makefile for dine seating project
 
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -g3 -c
+CXXFLAGS = -std=c++11 -pthread -lrt -Wall -g3 -c 
 
-OBJS = consumer.o log.o producer.o dineseating.o
+OBJS = consumer.o log.o producer.o dineseating.o monitor.o robot.o
 
 PROGRAM=dineseating
 
@@ -19,6 +19,12 @@ log.o: log.h
 
 producer.o: producer.h
 	$(CXX) $(CXXFLAGS) producer.cpp
+
+monitor.o: monitor.h
+	$(CXX) $(CXXFLAGS) monitor.cpp
+
+robot.o: robot.h
+	$(CXX) $(CXXFLAGS) robot.cpp
 
 consumer.o: consumer.h
 	$(CXX) $(CXXFLAGS) consumer.cpp
