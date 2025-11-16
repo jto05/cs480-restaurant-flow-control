@@ -14,7 +14,7 @@ PROGRAM=dineseating
 $(PROGRAM) : $(OBJS) 
 	$(CXX) -pthread -o $(PROGRAM) $^
 
-log.o: log.h
+log.o: log.h seating.h
 	$(CXX) $(CXXFLAGS) log.cpp
 
 producer.o: producer.h
