@@ -3,6 +3,9 @@
 #include "seating.h"
 #include <time.h>
 
+int Producer::requestsAdded;
+int Producer::maxRequests;
+
 Producer::Producer( Monitor *monitor,
     unsigned int sleepTime  ) : Robot(sleepTime) {
   this->sleepTime = sleepTime; // sleepTime should be in milliseconds;
@@ -27,9 +30,14 @@ void Producer::start() {
 
 };
 
-
-
 void Producer::init_shared_data(int n ) {
   maxRequests = n;
   requestsAdded = 0;
 };
+
+void* producer_start( void *ptr ) {
+
+  Producer *p = ( Producer *) ptr;
+  p->start();
+
+}

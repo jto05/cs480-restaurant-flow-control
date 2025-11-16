@@ -23,4 +23,6 @@ public:
   static void init_shared_data( int );
 };
 
+void *producer_start( void* );
+
 #endif
