@@ -7,7 +7,7 @@ Monitor::Monitor(int queueSize) {
   pthread_cond_init( &availableSlots, NULL );
 };
 
-void Monitor::insert( bool isVip ) {
+void Monitor::insert( RequestType request ) {
 
       // * BEGIN CRITICAL REGION *
   pthread_mutex_lock( &lock );
@@ -17,7 +17,7 @@ void Monitor::insert( bool isVip ) {
     pthread_cond_wait( &unconsumed, &lock );
   }
 
-  queue.push( isVip );
+  queue.push( request );
   requestsInQueue++;
   pthread_cond_signal( &unconsumed );
 

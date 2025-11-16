@@ -1,10 +1,12 @@
 #include "producer.h"
 
+#include "seating.h"
 #include <time.h>
 
 Producer::Producer( Monitor *monitor,
     unsigned int sleepTime  ) : Robot(sleepTime) {
   this->sleepTime = sleepTime; // sleepTime should be in milliseconds;
+  this->monitor = monitor;
 
 }
 
@@ -19,7 +21,7 @@ void Producer::start() {
 
     // sleep to simulate time it takes to complete request
     nanosleep( &SleepTime, NULL );
-    monitor->insert( false );
+    monitor->insert( GeneralTable );
 
   }
 
@@ -28,6 +30,6 @@ void Producer::start() {
 
 
 void Producer::init_shared_data(int n ) {
-  this->maxRequests = n;
-  this->requestsAdded = 0;
+  maxRequests = n;
+  requestsAdded = 0;
 };

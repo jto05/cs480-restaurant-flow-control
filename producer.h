@@ -12,13 +12,15 @@ using namespace std;
 class Producer : public Robot{
 private:
   int currRequests;
+  Monitor* monitor;
   static int maxRequests;
   static int requestsAdded;
+  
 
 public:
   Producer( Monitor*, unsigned int );
   void start();
-  static init_shared_data( int );
+  static void init_shared_data( int );
 };
 
 #endif
