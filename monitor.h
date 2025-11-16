@@ -11,14 +11,14 @@ private:
   pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
   pthread_cond_t unconsumed;
   pthread_cond_t availableSlots;
+
+public:
   int requestsInQueue;
   int capacity;
 
-public:
   Monitor(int queueSize);
-  void insert();
+  void insert( bool );
   void remove();
-
 
 };
 
