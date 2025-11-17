@@ -22,7 +22,7 @@ int main( int argc, char** argv ) {
   int maxVIPSeatings = 6;
   int x_sleepTime = 0;
   int r_sleepTime = 0;
-  int g_sleepTime = 1;
+  int g_sleepTime = 0;
   int v_sleepTime = 0;
 
   // Process command line arguments
