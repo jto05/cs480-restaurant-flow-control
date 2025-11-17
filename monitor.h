@@ -29,7 +29,7 @@ public:
   unsigned int inRequestQueue[RequestTypeN];
 
   Monitor(int queueSize, int requestLimit, int vipLimit);
-  void insert( RequestType );
+  bool insert( RequestType );
   void remove( ConsumerType );
 
 };

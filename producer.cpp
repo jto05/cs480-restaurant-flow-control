@@ -5,13 +5,10 @@
 #include <time.h>
 #include <iostream>
 
-int Producer::requestsAdded;
-int Producer::maxRequests;
-
 Producer::Producer( Monitor *monitor,
     RequestType type,
     unsigned int sleepTime  ) : Robot(sleepTime) {
-  this->requestType = type;
+  this->type = type;
   this->sleepTime = sleepTime; // sleepTime should be in milliseconds;
   this->monitor = monitor;
 
@@ -21,17 +18,17 @@ void Producer::start() {
 
   struct timespec SleepTime;
   SleepTime.tv_sec = sleepTime / 1000;
-  SleepTime.tv_nsec = (sleepTime % 1000 ) / 1000000;
+  SleepTime.tv_nsec = (sleepTime % 1000 ) * 1000000;
 
-  while ( monitor->totalAddedRequests < monitor->maxRequests ) {
+  bool completed = false;
+
+  while ( !completed ) {
 
     // sleep to simulate time it takes to complete request
     nanosleep( &SleepTime, NULL );
-    monitor->insert( requestType );
+    completed = monitor->insert( type );
 
   }
-
-  std::cout << "finish" << std::endl;
 
 };
 

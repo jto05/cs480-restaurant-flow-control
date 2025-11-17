@@ -24,20 +24,37 @@ Monitor::Monitor(int queueSize, int maxRequests, int vipLimit) {
 
 };
 
-void Monitor::insert( RequestType request ) {
+bool Monitor::insert( RequestType request ) {
 
       // * BEGIN CRITICAL REGION *
   pthread_mutex_lock( &lock );
+
+  // unlock mutex and then return true that we completed 
+  if ( totalAddedRequests >= maxRequests ) {
+    pthread_mutex_unlock( &lock );
+    return true;
+  }
 
 
   //while queue is full
   while (requestsInQueue >= capacity) {
     pthread_cond_wait( &availableSlots, &lock );
+
+    // while waiting, we might hit maxRequests so we still return true here
+    if ( totalAddedRequests >= maxRequests ) {
+      pthread_mutex_unlock( &lock );
+      return true;
+    }
   }
 
   if ( request == VIPRoom ) {
     while ( inRequestQueue[request] > 6 ) {
       pthread_cond_wait( &availableVIP, &lock );
+      // while waiting, we might hit maxRequests so we still return true here
+      if ( totalAddedRequests >= maxRequests ) {
+        pthread_mutex_unlock( &lock );
+        return true;
+      }
     }
   } 
   
@@ -55,6 +72,7 @@ void Monitor::insert( RequestType request ) {
 
   pthread_mutex_unlock( &lock );
       // * END CRITICAL REGION *
+  return false;
 }
 
 void Monitor::remove( ConsumerType type ) {
