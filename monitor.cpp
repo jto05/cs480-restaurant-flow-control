@@ -4,13 +4,15 @@
 #include "seating.h"
 #include "log.h"
 
-Monitor::Monitor(int queueSize, int maxRequests) {
+Monitor::Monitor(int queueSize, int maxRequests, int vipLimit) {
   this->capacity = queueSize;
+  this->vipLimit = vipLimit;
   this->maxRequests = maxRequests;
-  this->addedRequests = 0;
+  this->totalAddedRequests = 0;
   this->requestsInQueue = 0;
   pthread_cond_init( &unconsumed, NULL );
   pthread_cond_init( &availableSlots, NULL );
+  pthread_cond_init( &availableVIP, NULL );
 };
 
 void Monitor::insert( RequestType request ) {
@@ -23,13 +25,19 @@ void Monitor::insert( RequestType request ) {
     pthread_cond_wait( &availableSlots, &lock );
   }
 
+  if ( request == VIPRoom ) {
+    while ( inRequestQueue[request] > 6 ) {
+      pthread_cond_wait( &availableVIP, &lock );
+    }
+  } 
+  
   queue.push( request );
 
   produced[request]++;
   inRequestQueue[request]++;
 
   requestsInQueue++;
-  addedRequests++;
+  totalAddedRequests++;
 
   output_request_added(request, produced, inRequestQueue);
 
@@ -39,7 +47,7 @@ void Monitor::insert( RequestType request ) {
       // * END CRITICAL REGION *
 }
 
-void Monitor::remove() {
+void Monitor::remove( ConsumerType type ) {
 
       // * BEGIN CRITICAL REGION *
   pthread_mutex_lock( &lock );
@@ -47,7 +55,6 @@ void Monitor::remove() {
   // while queue is empty
   while (requestsInQueue <= 0) {
     pthread_cond_wait( &unconsumed, &lock );
-    
   }
 
   RequestType r = queue.front();
@@ -55,9 +62,11 @@ void Monitor::remove() {
   inRequestQueue[r]--;
   requestsInQueue--;
 
+  output_request_removed(type, r, produced, inRequestQueue);
 
-  output_request_removed(TX, r, produced, inRequestQueue);
-
+  if ( r == VIPRoom ) 
+    pthread_cond_signal( &availableVIP );
+  
 
   pthread_cond_signal( &availableSlots );
 

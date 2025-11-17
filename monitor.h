@@ -11,6 +11,7 @@ private:
   pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
   pthread_cond_t unconsumed;
   pthread_cond_t availableSlots;
+  pthread_cond_t availableVIP;
 
   //logging
   unsigned int produced[RequestTypeN];
@@ -18,13 +19,14 @@ private:
 
 public:
   int requestsInQueue;
-  int addedRequests;
+  int vipLimit;
+  int totalAddedRequests;
   int maxRequests;
   int capacity;
 
-  Monitor(int queueSize, int requestLimit);
+  Monitor(int queueSize, int requestLimit, int vipLimit);
   void insert( RequestType );
-  void remove();
+  void remove( ConsumerType );
 
 };
 
