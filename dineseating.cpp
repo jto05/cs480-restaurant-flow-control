@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include "log.h"
 #include "producer.h"
 #include "consumer.h"
 #include "monitor.h"
@@ -18,9 +19,10 @@ int main( int argc, char** argv ) {
 
   int requestLimit = 110;
   int maxQueueSize = 20;
+  int maxVIPSeatings = 6;
   int x_sleepTime = 0;
   int r_sleepTime = 0;
-  int g_sleepTime = 0;
+  int g_sleepTime = 1;
   int v_sleepTime = 0;
 
   // Process command line arguments
@@ -50,13 +52,26 @@ int main( int argc, char** argv ) {
   }
 
   pthread_t gpThread;
+  pthread_t vpThread;
+  pthread_t xcThread;
+  pthread_t rcThread;
 
-  Monitor *m = new Monitor( maxQueueSize );
-  Producer *gp = new Producer( m, (unsigned int) g_sleepTime );
-
-  Producer::init_shared_data( requestLimit );
+  Monitor *m = new Monitor( maxQueueSize, requestLimit, maxVIPSeatings );
+  Producer *gp = new Producer( m, GeneralTable, (unsigned int) g_sleepTime );
+  Producer *vp = new Producer( m, VIPRoom, (unsigned int) v_sleepTime );
+  Consumer *xc = new Consumer( m, TX, (unsigned int) x_sleepTime );
+  Consumer *rc = new Consumer( m, Rev9, (unsigned int) r_sleepTime );
 
   pthread_create( &gpThread, NULL, &producer_start, gp );
+  pthread_create( &vpThread, NULL, &producer_start, vp );
+  pthread_create( &xcThread, NULL, &consumer_start, xc );
+  pthread_create( &rcThread, NULL, &consumer_start, rc );
 
-  return 0;
+  sem_wait( &(m->consumersCompleted) );
+  sem_wait( &(m->consumersCompleted) );
+
+  pthread_join( xcThread, NULL );
+  pthread_join( rcThread, NULL );
+
+  output_production_history( m->produced, m->consumed );
 }

@@ -4,6 +4,7 @@
 #include "seating.h"
 #include <queue>
 #include <pthread.h>
+#include <semaphore.h>  
 
 class Monitor { 
 private:
@@ -13,16 +14,19 @@ private:
   pthread_cond_t availableSlots;
   pthread_cond_t availableVIP;
 
-  //logging
-  unsigned int produced[RequestTypeN];
-  unsigned int inRequestQueue[RequestTypeN];
 
 public:
+  sem_t consumersCompleted;
   int requestsInQueue;
   int vipLimit;
   int totalAddedRequests;
   int maxRequests;
   int capacity;
+
+  //logging
+  unsigned int produced[RequestTypeN];
+  unsigned int **consumed;
+  unsigned int inRequestQueue[RequestTypeN];
 
   Monitor(int queueSize, int requestLimit, int vipLimit);
   void insert( RequestType );
