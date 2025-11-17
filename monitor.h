@@ -12,11 +12,17 @@ private:
   pthread_cond_t unconsumed;
   pthread_cond_t availableSlots;
 
+  //logging
+  unsigned int produced[RequestTypeN];
+  unsigned int inRequestQueue[RequestTypeN];
+
 public:
   int requestsInQueue;
+  int addedRequests;
+  int maxRequests;
   int capacity;
 
-  Monitor(int queueSize);
+  Monitor(int queueSize, int requestLimit);
   void insert( RequestType );
   void remove();
 
