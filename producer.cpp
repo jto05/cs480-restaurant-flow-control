@@ -7,7 +7,8 @@
 
 Producer::Producer( Monitor *monitor,
     RequestType type,
-    unsigned int sleepTime  ) : Robot(sleepTime) {
+    unsigned int sleepTime  ) {
+  this->sleepTime = sleepTime;
   this->type = type;
   this->sleepTime = sleepTime; // sleepTime should be in milliseconds;
   this->monitor = monitor;

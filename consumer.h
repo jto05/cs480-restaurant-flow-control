@@ -4,8 +4,9 @@
 #include "monitor.h"
 #include "robot.h"
 
-class Consumer : public Robot {
+class Consumer {
 private:
+  unsigned int sleepTime;
   Monitor *monitor;
   ConsumerType type;
 

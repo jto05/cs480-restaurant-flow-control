@@ -9,8 +9,9 @@
 
 using namespace std;
 
-class Producer : public Robot{
+class Producer {
 private:
+  unsigned int sleepTime;
   RequestType type;
   Monitor* monitor;
 

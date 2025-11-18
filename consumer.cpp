@@ -6,7 +6,8 @@
 
 Consumer::Consumer( Monitor *m,
     ConsumerType type, 
-    unsigned int sleepTime ) : Robot(sleepTime) {
+    unsigned int sleepTime ) {
+  this->sleepTime = sleepTime;
   this->type = type;
   this->monitor = m;
 }
