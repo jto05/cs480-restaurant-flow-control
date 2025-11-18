@@ -31,6 +31,7 @@ public:
   Monitor(int queueSize, int requestLimit, int vipLimit);
   bool insert( RequestType );
   void remove( ConsumerType );
+  void processMaxRequestLimit();
 
 };
 
