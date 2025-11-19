@@ -1,4 +1,3 @@
-
 # Names: Kaylee Muckerman and Julian To
 # REDID: 130526510 and 130405272
 
@@ -7,7 +6,7 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -pthread -lrt -Wall -g3 -c 
 
-OBJS = consumer.o log.o producer.o dineseating.o monitor.o robot.o
+OBJS = consumer.o log.o producer.o dineseating.o monitor.o
 
 PROGRAM=dineseating
 
@@ -22,9 +21,6 @@ producer.o: producer.h
 
 monitor.o: monitor.h
 	$(CXX) $(CXXFLAGS) monitor.cpp
-
-robot.o: robot.h
-	$(CXX) $(CXXFLAGS) robot.cpp
 
 consumer.o: consumer.h
 	$(CXX) $(CXXFLAGS) consumer.cpp

@@ -1,0 +1,33 @@
+
+// binary semaphore
+semaphore mutex = 1; 
+
+// barrier semaphores
+semaphore unconsumed = 0;              
+semaphore availableSlots = bufferSize; 
+semaphore availableVIP = vipLimit;     // vipLimit = 6 
+
+
+func producer_start()  {
+
+  while ( true ) {
+    
+    // sleep thread if queue is full ( at capacity of 20 )
+    if ( queue.full() ) {
+      availableSlots.down()
+    }
+
+    // sleep thread if vipRoom request and there is no space for VIPS ( max = 6 )
+    if (requestType == vipRoom && currentVIPSlots == maxVIPSlots) {
+      availableVIP.down()
+    }
+
+    mutex.down()
+      produce(requestType)
+    mutex.up()
+
+    unconsumed.up();
+
+  }
+}
+
