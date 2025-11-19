@@ -129,7 +129,8 @@ bool Monitor::insert( RequestType request ) {
  */
 void Monitor::remove( ConsumerType type ) {
 
-  bool atCapacity;
+  bool wasFull;
+  bool vipWasFull;
 
       // * BEGIN CRITICAL REGION *
   pthread_mutex_lock( &lock );
@@ -148,7 +149,8 @@ void Monitor::remove( ConsumerType type ) {
     pthread_cond_wait( &unconsumed, &lock );
   }
 
-  atCapacity = ( requestsInQueue >= capacity );
+  wasFull = ( requestsInQueue >= capacity );
+  vipWasFull = ( inRequestQueue[VIPRoom] >= vipLimit );
 
   // get request from front of queue 
   RequestType r = queue.front();
@@ -162,17 +164,20 @@ void Monitor::remove( ConsumerType type ) {
   // logging function
   output_request_removed(type, r, consumed[type], inRequestQueue);
 
-  if ( atCapacity ) {
+  if ( wasFull ) {
     // signal to the producer that there are slots available
     //    if it WAS at capacity
     pthread_cond_signal( &availableSlots );
 
-    if ( r == VIPRoom )  {
+    if ( r == VIPRoom && vipWasFull  )  {
       // signal to the producer that there are VIP slots available
       //    if it WAS at capacity
       pthread_cond_signal( &availableVIP );
     }
+
   }
+
+
 
   pthread_mutex_unlock( &lock );
       // * END CRITICAL REGION *
